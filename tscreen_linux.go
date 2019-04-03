@@ -33,10 +33,19 @@ func (t *tScreen) termioInit() error {
 	var ioc uintptr
 	t.tiosp = &termiosPrivate{}
 
-	if t.in, e = os.OpenFile("/dev/tty", os.O_RDONLY, 0); e != nil {
+	intty := "/dev/tty"
+	outtty := "/dev/tty"
+
+	gwtty := os.Getenv("GOWID_TTY")
+	if gwtty != "" {
+		intty = gwtty
+		outtty = gwtty
+	}
+
+	if t.in, e = os.OpenFile(intty, os.O_RDONLY, 0); e != nil {
 		goto failed
 	}
-	if t.out, e = os.OpenFile("/dev/tty", os.O_WRONLY, 0); e != nil {
+	if t.out, e = os.OpenFile(outtty, os.O_WRONLY, 0); e != nil {
 		goto failed
 	}
 
