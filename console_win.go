@@ -124,6 +124,8 @@ const (
 
 	genericRead           = 0x80000000
 	genericWrite          = 0x40000000
+	fileShareRead         = 0x00000001
+	fileShareWrite        = 0x00000002
 	consoleTextmodeBuffer = 0x1
 )
 
@@ -545,7 +547,7 @@ func mrec2btns(mbtns, flags uint32) ButtonMask {
 // an implementation from termbox-go.
 func createConsoleScreenBuffer() (syscall.Handle, error) {
 	hdl, _, e := syscall.Syscall6(procCreateConsoleScreenBuffer.Addr(),
-		5, uintptr(genericRead|genericWrite), 0, 0, consoleTextmodeBuffer, 0, 0)
+		5, uintptr(genericRead|genericWrite), uintptr(fileShareRead|fileShareWrite), 0, consoleTextmodeBuffer, 0, 0)
 	if hdl == uintptr(0) {
 		if e != 0 {
 			return syscall.Handle(0), error(e)
